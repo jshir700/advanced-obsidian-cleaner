@@ -3,12 +3,15 @@ name: Build & Release
 on:
   push:
     branches: [main]
+    tags:
+      - 'v*'
     paths:
       - 'advanced-obsidian-cleaner/src/**'
       - 'advanced-obsidian-cleaner/styles.css'
       - 'advanced-obsidian-cleaner/manifest.json'
       - 'advanced-obsidian-cleaner/package.json'
       - 'advanced-obsidian-cleaner/esbuild.config.mjs'
+      - '.github/workflows/**'
 
 permissions:
   contents: write
