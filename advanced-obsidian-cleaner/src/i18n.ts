@@ -18,14 +18,20 @@ export default function translate(): Locale {
   try {
     // @ts-ignore - obsidian app global
     const app = window.app;
-    if (app?.vault) {
-      const obsidianLocale = app.vault.getConfig('language') || app.vault.getConfig('locale') || '';
-      if (obsidianLocale && LOCALES[obsidianLocale]) {
-        systemLocale = obsidianLocale;
+    if (app) {
+      // Priority: locale > language > moment.locale()
+      const locale = app.vault.getConfig('locale') || '';
+      if (locale && LOCALES[locale]) {
+        systemLocale = locale;
       } else {
-        const mLocale = moment.locale();
-        if (LOCALES[mLocale]) {
-          systemLocale = mLocale;
+        const language = app.vault.getConfig('language') || '';
+        if (language && LOCALES[language]) {
+          systemLocale = language;
+        } else {
+          const mLocale = moment.locale();
+          if (LOCALES[mLocale]) {
+            systemLocale = mLocale;
+          }
         }
       }
     }
