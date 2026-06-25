@@ -38,10 +38,16 @@ jobs:
         run: npm run build
         working-directory: ./advanced-obsidian-cleaner
 
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./advanced-obsidian-cleaner/manifest.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Create ZIP
         run: |
           cd advanced-obsidian-cleaner
-          zip -j ../advanced-obsidian-cleaner-${{ github.ref_name }}.zip \
+          zip -j ../advanced-obsidian-cleaner-v${{ steps.version.outputs.version }}.zip \
             main.js styles.css manifest.json
 
       - name: Upload artifact
@@ -54,14 +60,16 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: advanced-obsidian-cleaner-*.zip
+          files: advanced-obsidian-cleaner-v*.zip
           draft: false
           prerelease: false
           body: |
-            English:
-            - Built from ${{ github.sha }}
-            - Auto-built via GitHub Actions
+            ## English
 
-            中文：
-            - 构建哈希 ${{ github.sha }}
-            - 通过 GitHub Actions 自动构建
+            - Auto-built from ${{ github.sha }}
+            - Extract `main.js`, `styles.css`, `manifest.json` to your Obsidian plugins folder
+
+            ## 中文
+
+            - 自动构建，提交哈希 ${{ github.sha }}
+            - 将 `main.js`、`styles.css`、`manifest.json` 解压到 Obsidian 插件目录
