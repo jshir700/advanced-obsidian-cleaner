@@ -1,0 +1,63 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'advanced-obsidian-cleaner/src/**'
+      - 'advanced-obsidian-cleaner/styles.css'
+      - 'advanced-obsidian-cleaner/manifest.json'
+      - 'advanced-obsidian-cleaner/package.json'
+      - 'advanced-obsidian-cleaner/esbuild.config.mjs'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./advanced-obsidian-cleaner
+
+      - name: Build
+        run: npm run build
+        working-directory: ./advanced-obsidian-cleaner
+
+      - name: Create ZIP
+        run: |
+          cd advanced-obsidian-cleaner
+          zip -j ../advanced-obsidian-cleaner-${{ github.ref_name }}.zip \
+            main.js styles.css manifest.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: advanced-obsidian-cleaner
+          path: advanced-obsidian-cleaner-v*.zip
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: advanced-obsidian-cleaner-*.zip
+          draft: false
+          prerelease: false
+          body: |
+            English:
+            - Built from ${{ github.sha }}
+            - Auto-built via GitHub Actions
+
+            中文：
+            - 构建哈希 ${{ github.sha }}
+            - 通过 GitHub Actions 自动构建
