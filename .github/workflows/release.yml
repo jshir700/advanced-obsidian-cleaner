@@ -10,6 +10,7 @@ on:
       - 'advanced-obsidian-cleaner/styles.css'
       - 'advanced-obsidian-cleaner/manifest.json'
       - 'advanced-obsidian-cleaner/package.json'
+      - 'advanced-obsidian-cleaner/package-lock.json'
       - 'advanced-obsidian-cleaner/esbuild.config.mjs'
       - '.github/workflows/**'
 
