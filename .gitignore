@@ -1,0 +1,13 @@
+# Dependencies
+advanced-obsidian-cleaner/node_modules/
+
+# Build output
+advanced-obsidian-cleaner/main.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
